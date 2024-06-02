@@ -59,11 +59,10 @@ export const SignInScreen = ({ navigation }) => {
           <ScrollView>
             <AuthForm>
               <AuthFormGroup>
-                <AuthLabel>Email</AuthLabel>
                 <AuthTextInput
-                  placeholder="Email"
-                  left={<TextInput.Icon icon="email" color={"#959395"} />}
+                  label="Email"
                   mode="outlined"
+                  left={<TextInput.Icon icon="email" color={"#959395"} />}
                   keyboardType={"email-address"}
                   textContentType="emailAddress"
                   autoCapitalize="none"
@@ -71,7 +70,6 @@ export const SignInScreen = ({ navigation }) => {
                 />
               </AuthFormGroup>
               <AuthFormGroup>
-                <AuthLabel>Password</AuthLabel>
                 <AuthTextInput
                   onChangeText={setPassword}
                   label="Password"

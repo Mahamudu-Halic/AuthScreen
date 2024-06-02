@@ -24,7 +24,8 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../../services/auth/auth.context";
 
 export const SignUpScreen = ({ navigation }) => {
-  const { isLoading, onRegister, error } = useContext(AuthContext);
+  const { isLoading, onRegister, error, onGoogleLogin } =
+    useContext(AuthContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -133,7 +134,7 @@ export const SignUpScreen = ({ navigation }) => {
                   gap: 20,
                 }}
               >
-                <AuthProviderButton>
+                <AuthProviderButton onPress={onGoogleLogin}>
                   <Icon source={"google"} size={25} color="white" />
                 </AuthProviderButton>
                 <AuthProviderButton>

@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import {
   googleLoginRequest,
   loginRequest,
@@ -11,6 +11,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { auth, googleProvider } from "../../../firebase";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 export const AuthContext = createContext();
 
@@ -24,9 +25,8 @@ export const AuthContextProvider = ({ children }) => {
     if (u) {
       setUser(u);
       setIsAuthorized(true);
-    } else {
-      setIsAuthorized(false);
     }
+    return;
   });
 
   const onLogin = (email, password) => {
@@ -51,33 +51,20 @@ export const AuthContextProvider = ({ children }) => {
     } catch (err) {}
   };
 
-  const onGoogleLogin = () => {
+  const onGoogleLogin = async () => {
+    // setIsLoading(true);
     try {
-      signInWithPopup(auth, googleProvider)
-        .then((result) => {
-          // This gives you a Google Access Token. You can use it to access the Google API.
-          const credential = GoogleAuthProvider.credentialFromResult(result);
-          const token = credential.accessToken;
-          // The signed-in user info.
-          const u = result.user;
-          console.log(u);
-          // IdP data available using getAdditionalUserInfo(result)
-          // ...
-        })
-        .catch((error) => {
-          // Handle Errors here.
-          const errorCode = error.code;
-          console.log("ErrorCode: ", errorCode);
-          const errorMessage = error.message;
-          console.log("ErrorMessage: ", errorMessage);
-          // The email of the user's account used.
-          const email = error.customData.email;
-          // The AuthCredential type that was used.
-          const credential = GoogleAuthProvider.credentialFromError(error);
-          // ...
-        });
-    } catch (error) {
-      console.log(error);
+      await GoogleSignin.hasPlayServices();
+      GoogleSignin.signIn().then((data) => {
+        setIsAuthorized(true);
+        setUser(data?.user);
+        setError(null);
+      });
+    } catch (e) {
+      // setIsLoading(false);
+      setIsAuthorized(false);
+      setUser(null);
+      setError(e);
     }
   };
 
@@ -116,7 +103,17 @@ export const AuthContextProvider = ({ children }) => {
     setUser(null);
     setIsAuthorized(false);
     signOutRequest();
+    GoogleSignin.revokeAccess();
+    GoogleSignin.signOut();
   };
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        "205321208045-o8j4u513e7373a1sopuku5mrkqm70778.apps.googleusercontent.com",
+    });
+    onGoogleLogin();
+  }, []);
 
   const value = {
     user,

@@ -15,7 +15,15 @@ export const Settings = () => {
   return (
     <SafeArea>
       <AvatarContainer>
-        <Avatar.Icon icon={"human"} size={200} backgroundColor="#4840CA" />
+        {user?.photo ? (
+          <Avatar.Image
+            source={{ uri: user?.photo }}
+            size={180}
+            backgroundColor="#4840CA"
+          />
+        ) : (
+          <Avatar.Icon icon={"human"} size={200} backgroundColor="#4840CA" />
+        )}
 
         <Text>{user?.email}</Text>
       </AvatarContainer>
